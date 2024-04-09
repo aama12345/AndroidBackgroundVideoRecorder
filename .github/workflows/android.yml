@@ -24,3 +24,21 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+
+    - name: Install and set Flutter version
+      uses: subosito/flutter-action@v2
+      with:
+          flutter-version: "3.10.6"
+
+    - name: Restore packages
+      run: flutter pub get
+
+    - name: Build Android App Bundle
+      run: flutter build apk --release -t lib/main_prd.dart
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+          artifacts: "build/app/outputs/apk/release/app-release.apk"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
